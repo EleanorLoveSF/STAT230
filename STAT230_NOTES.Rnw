@@ -1,0 +1,45 @@
+\documentclass{article}
+\usepackage{tagstoc}
+\usepackage{dp_latex_style}
+
+\renewcommand*\listoftagstitle{Snippets tagged with \currenttag}
+% Preferred way to declare tags.  They will be printed in this order.
+\forcsvlist\declaretag{Numerical Linear Algebra}
+
+\begin{document}
+\snippetsbytag
+\newpage
+
+\section{}
+\snippet{Lecture 2}\\
+
+\placetag{Numerical Linear Algebra}\hfill
+\small\texttt{2017-01-11}
+
+
+\section{Review of Linear Alg.}
+
+<<CHUNK_NAME>>=
+
+@
+
+
+\end{document}
+
+
+
+%-------------------------------------------------------------------------%%-------------------------------------------------------------------------%%-------------------------------------------------------------------------%
+
+
+
+%
+%\snippet{} % Date
+%\placetag{}
+%\placetag{}
+%\placetag{}
+%
+%\section{} % Topic Title
+%
+%\begin{enumerate}
+%\item
+%\end{enumerate}

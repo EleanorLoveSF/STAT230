@@ -1,0 +1,238 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\RequirePackage{/home/dustin/Dropbox/Latex/dp_latex_style}
+\usepackage{subcaption}
+
+% Set up the header and footer
+\pagestyle{fancy}
+\lhead{\textbf{\hmwkClass: \hmwkTitle}\\ \today} % Top center head
+\rhead{\hmwkAuthorName} % Top right header
+\lfoot{\lastxmark} % Bottom left footer
+\cfoot{} % Bottom center footer
+\rfoot{Page\ \thepage\ of\ \protect\pageref{LastPage}} % Bottom right footer3
+\renewcommand\headrulewidth{0.4pt} % Size of the header rule
+\renewcommand\footrulewidth{0.4pt} % Size of the footer rule
+
+%-----------------------------------------------------------------------
+%	NAME AND CLASS SECTION
+%-----------------------------------------------------------------------
+
+\newcommand{\hmwkTitle}{Homework \#1} % Assignment title
+\newcommand{\hmwkClass}{STAT 230} % Course/class
+\newcommand{\hmwkAuthorName}{Dustin Pluta\\ID: 94166034} % Your name
+
+%-----------------------------------------------------------------------
+%	TITLE PAGE
+%-----------------------------------------------------------------------
+
+\title{
+\vspace{2in}
+\textmd{\textbf{\hmwkClass:\ \hmwkTitle}}
+\normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate}
+}
+
+%-----------------------------------------------------------------------
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{wd} \hlkwb{<-} \hlstr{"~/Dropbox/Coursework/Winter2017/STAT230/"}
+\hlstd{dat1} \hlkwb{<-} \hlkwd{read.csv}\hlstd{(}\hlkwd{paste}\hlstd{(wd,} \hlstr{"Data/Assignment1.csv"}\hlstd{),} \hlkwc{row.names} \hlstd{=} \hlnum{1}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in file(file, "{}rt"{}): cannot open file '/home/dustin/Dropbox/Coursework/Winter2017/STAT230/ Data/Assignment1.csv': No such file or directory}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in file(file, "{}rt"{}): cannot open the connection}}\begin{alltt}
+\hlstd{X} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(dat1[,} \hlnum{1}\hlopt{:}\hlnum{5}\hlstd{])}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in as.matrix(dat1[, 1:5]): object 'dat1' not found}}\begin{alltt}
+\hlstd{y} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(dat1}\hlopt{$}\hlstd{y)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in as.matrix(dat1\$y): object 'dat1' not found}}\end{kframe}
+\end{knitrout}
+
+%-------------------------------------------------------------------------------
+%	PROBLEM 1
+%-------------------------------------------------------------------------------
+
+\begin{homeworkProblem}[Problem 1]
+
+\subsection*{(a)}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{source}\hlstd{(}\hlkwd{paste}\hlstd{(wd,} \hlstr{"Code/gram_schmidt.R"}\hlstd{))}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in file(filename, "{}r"{}, encoding = encoding): cannot open file '/home/dustin/Dropbox/Coursework/Winter2017/STAT230/ Code/gram\_schmidt.R': No such file or directory}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in file(filename, "{}r"{}, encoding = encoding): cannot open the connection}}\begin{alltt}
+\hlstd{QR} \hlkwb{<-} \hlkwd{gram_schmidt}\hlstd{(X)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): could not find function "{}gram\_schmidt"{}}}\begin{alltt}
+\hlstd{beta} \hlkwb{<-} \hlkwd{solve}\hlstd{(QR}\hlopt{$}\hlstd{R)} \hlopt{%*%} \hlkwd{t}\hlstd{(QR}\hlopt{$}\hlstd{Q)} \hlopt{%*%} \hlstd{y}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in solve(QR\$R): object 'QR' not found}}\begin{alltt}
+\hlkwd{print}\hlstd{(beta)}
+\end{alltt}
+\begin{verbatim}
+## function (a, b) 
+## .Internal(beta(a, b))
+## <bytecode: 0x26a6748>
+## <environment: namespace:base>
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# (b) Householder}
+\hlkwd{source}\hlstd{(}\hlkwd{paste}\hlstd{(wd,} \hlstr{"Code/householder.R"}\hlstd{))}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in file(filename, "{}r"{}, encoding = encoding): cannot open file '/home/dustin/Dropbox/Coursework/Winter2017/STAT230/ Code/householder.R': No such file or directory}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in file(filename, "{}r"{}, encoding = encoding): cannot open the connection}}\begin{alltt}
+\hlstd{QR} \hlkwb{<-} \hlkwd{householder}\hlstd{(X)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): could not find function "{}householder"{}}}\begin{alltt}
+\hlstd{beta} \hlkwb{<-} \hlkwd{solve}\hlstd{(QR}\hlopt{$}\hlstd{R)} \hlopt{%*%} \hlkwd{t}\hlstd{(QR}\hlopt{$}\hlstd{Q)} \hlopt{%*%} \hlstd{y}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in solve(QR\$R): object 'QR' not found}}\begin{alltt}
+\hlstd{beta}
+\end{alltt}
+\begin{verbatim}
+## function (a, b) 
+## .Internal(beta(a, b))
+## <bytecode: 0x26a6748>
+## <environment: namespace:base>
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# (c) Jacobi}
+\hlkwd{source}\hlstd{(}\hlkwd{paste}\hlstd{(wd,} \hlstr{"Code/jacobi.R"}\hlstd{))}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in file(filename, "{}r"{}, encoding = encoding): cannot open file '/home/dustin/Dropbox/Coursework/Winter2017/STAT230/ Code/jacobi.R': No such file or directory}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in file(filename, "{}r"{}, encoding = encoding): cannot open the connection}}\begin{alltt}
+\hlstd{beta} \hlkwb{<-} \hlkwd{jacobi}\hlstd{(}\hlkwd{t}\hlstd{(X)} \hlopt{%*%} \hlstd{X,} \hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{5}\hlstd{),} \hlkwd{t}\hlstd{(X)} \hlopt{%*%} \hlstd{y)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): could not find function "{}jacobi"{}}}\begin{alltt}
+\hlkwd{print}\hlstd{(beta)}
+\end{alltt}
+\begin{verbatim}
+## function (a, b) 
+## .Internal(beta(a, b))
+## <bytecode: 0x26a6748>
+## <environment: namespace:base>
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Verify values using lm()}
+\hlstd{fit} \hlkwb{<-} \hlkwd{lm}\hlstd{(y} \hlopt{~} \hlstd{.} \hlopt{-} \hlnum{1}\hlstd{,} \hlkwc{data} \hlstd{= dat1)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is.data.frame(data): object 'dat1' not found}}\begin{alltt}
+\hlkwd{print}\hlstd{(fit}\hlopt{$}\hlstd{coefficients)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in print(fit\$coefficients): object 'fit' not found}}\end{kframe}
+\end{knitrout}
+
+\end{homeworkProblem}
+
+
+
+%-------------------------------------------------------------------------------
+%	PROBLEM 2
+%-------------------------------------------------------------------------------
+
+\begin{homeworkProblem}[Problem 2]
+
+\end{homeworkProblem}
+
+
+
+\end{document}
+

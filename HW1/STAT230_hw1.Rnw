@@ -1,0 +1,95 @@
+\documentclass{article}
+
+\RequirePackage{/home/dustin/Dropbox/Latex/dp_latex_style}
+\usepackage{subcaption}
+
+% Set up the header and footer
+\pagestyle{fancy}
+\lhead{\textbf{\hmwkClass: \hmwkTitle}\\ \today} % Top center head
+\rhead{\hmwkAuthorName} % Top right header
+\lfoot{\lastxmark} % Bottom left footer
+\cfoot{} % Bottom center footer
+\rfoot{Page\ \thepage\ of\ \protect\pageref{LastPage}} % Bottom right footer3
+\renewcommand\headrulewidth{0.4pt} % Size of the header rule
+\renewcommand\footrulewidth{0.4pt} % Size of the footer rule
+
+%-----------------------------------------------------------------------
+%	NAME AND CLASS SECTION
+%-----------------------------------------------------------------------
+
+\newcommand{\hmwkTitle}{Homework \#1} % Assignment title
+\newcommand{\hmwkClass}{STAT 230} % Course/class
+\newcommand{\hmwkAuthorName}{Dustin Pluta\\ID: 94166034} % Your name
+
+%-----------------------------------------------------------------------
+%	TITLE PAGE
+%-----------------------------------------------------------------------
+
+\title{
+\vspace{2in}
+\textmd{\textbf{\hmwkClass:\ \hmwkTitle}}
+\normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate}
+}
+
+%-----------------------------------------------------------------------
+
+\begin{document}
+<<init>>=
+wd <- "~/Dropbox/Coursework/Winter2017/STAT230/"
+dat1 <- read.csv(paste(wd, "Data/Assignment1.csv"), row.names = 1)
+
+X <- as.matrix(dat1[, 1:5])
+y <- as.matrix(dat1$y)
+@
+
+%-------------------------------------------------------------------------------
+%	PROBLEM 1
+%-------------------------------------------------------------------------------
+
+\begin{homeworkProblem}[Problem 1]
+
+\subsection*{(a)}
+<<a>>=
+source(paste(wd, "Code/gram_schmidt.R"))
+QR <- gram_schmidt(X)
+beta <- solve(QR$R) %*% t(QR$Q) %*% y
+print(beta)
+@
+
+<<b>>=
+# (b) Householder
+source(paste(wd, "Code/householder.R"))
+QR <- householder(X)
+beta <- solve(QR$R) %*% t(QR$Q) %*% y
+beta
+@
+
+<<c>>=
+# (c) Jacobi
+source(paste(wd, "Code/jacobi.R"))
+beta <- jacobi(t(X) %*% X, rep(1, 5), t(X) %*% y)
+print(beta)
+@
+
+<<verify>>=
+# Verify values using lm()
+fit <- lm(y ~ . - 1, data = dat1)
+print(fit$coefficients)
+@
+
+\end{homeworkProblem}
+
+
+
+%-------------------------------------------------------------------------------
+%	PROBLEM 2
+%-------------------------------------------------------------------------------
+
+\begin{homeworkProblem}[Problem 2]
+
+\end{homeworkProblem}
+
+
+
+\end{document}
+

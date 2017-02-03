@@ -1,0 +1,301 @@
+\documentclass{article}
+
+\RequirePackage{/home/dustin/Dropbox/Latex/dp_latex_style}
+\usepackage{subcaption}
+
+% Set up the header and footer
+\pagestyle{fancy}
+\lhead{\textbf{\hmwkClass: \hmwkTitle}\\ \today} % Top center head
+\rhead{\hmwkAuthorName} % Top right header
+\lfoot{\lastxmark} % Bottom left footer
+\cfoot{} % Bottom center footer
+\rfoot{Page\ \thepage\ of\ \protect\pageref{LastPage}} % Bottom right footer3
+\renewcommand\headrulewidth{0.4pt} % Size of the header rule
+\renewcommand\footrulewidth{0.4pt} % Size of the footer rule
+
+%-----------------------------------------------------------------------
+%	NAME AND CLASS SECTION
+%-----------------------------------------------------------------------
+
+\newcommand{\hmwkTitle}{Homework \#1} % Assignment title
+\newcommand{\hmwkClass}{STAT 230} % Course/class
+\newcommand{\hmwkAuthorName}{Dustin Pluta\\ID: 94166034} % Your name
+
+%-----------------------------------------------------------------------
+%	TITLE PAGE
+%-----------------------------------------------------------------------
+
+\title{
+\vspace{2in}
+\textmd{\textbf{\hmwkClass:\ \hmwkTitle}}
+\normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate}
+}
+
+%------------------------------------------------------------------
+
+\begin{document}
+<<init, echo=FALSE>>=
+wd <- "~/Dropbox/Coursework/Winter2017/STAT230/"
+dat1 <- read.csv("Data/Assignment1.csv", row.names = 1)
+
+X <- as.matrix(dat1[, 1:5])
+y <- as.matrix(dat1$y)
+@
+
+%------------------------------------------------------------------
+%	PROBLEM 1
+%------------------------------------------------------------------
+
+\begin{homeworkProblem}[Problem 1]
+
+We are interested in solving the linear regression
+
+\[\E[y | X] = \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \beta_4 X_4 + \beta_5 X_5\]
+
+using methods that avoid directly computing $(X^T X)^{-1}$, which can be computationally expensive.\\
+
+We first verify the true coefficient estimates using
+$\texttt{lm}$, giving
+
+\[\hat \beta = \begin{pmatrix} -1.949  -1.013  -0.040   0.935 & 2.016 \end{pmatrix}.\]
+
+<<verify>>=
+# Verify values using lm()
+fit <- lm(y ~ . - 1, data = dat1)
+print(fit$coefficients)
+@
+
+\subsection*{(a)}
+
+The code below shows solving the linear regression using the Gram-Schmidt process to find the
+$QR$-decomposition of the design matrix $X = QR$,
+where $R$ is an upper triangular matrix, which
+makes solving the system much easier.
+This decomposition allows us to compute the estimates as
+
+\begin{align*} R \hat \beta &= Q^T y\\
+\hat \beta &= R^{-1} Q^T y.\end{align*}
+
+The output below shows that this method produces the correct estimates.  The function \texttt{gram\_schmidt} takes an $n\times p$ matrix as input and returns the $QR$-decomposition.
+
+<<a>>=
+source("Code/gram_schmidt.R")
+QR <- gram_schmidt(X)
+beta <- solve(QR$R) %*% t(QR$Q) %*% y
+print(beta)
+@
+
+\clearpage
+\subsection*{(b)}
+Similar to (a), the system can be solved using the
+$QR$-decomposition produced by the Householder algorithm.  The function \texttt{householder} takes an $n \times p$ matrix $X$ as input and returns the $QR$-decomposition matrices.  The estimates are identical to above.
+
+<<b>>=
+# (b) Householder
+source("Code/householder.R")
+QR <- householder(X)
+beta <- solve(QR$R) %*% t(QR$Q) %*% y
+print(beta)
+@
+
+\subsection*{(c)}
+
+The Jacobi algorithm iteratively solves a linear system $A x = b$, where the estimated solution at the $k$th iterate is
+
+\[x_i^{(k)} = \frac{1}{a_ii}\left( b_i - \sum_{j \neq i} a_{ij} x_j^{(k)}\right),\]
+
+where $a_{ij}$ is the $ij$th element of $A$ and $b_i$ is the $i$th element of $b$.  For the linear regression with design matrix $X$ and response $y$, we can apply the Jacobi method to the following normal equation to get the coefficient estimates.
+
+\[(X^TX)^{-1} \hat\beta = X^Ty.\]
+
+<<c>>=
+# (c) Jacobi
+source("Code/jacobi.R")
+beta <- jacobi(t(X) %*% X, rep(1, 5), t(X) %*% y)
+print(beta)
+@
+
+\end{homeworkProblem}
+
+
+\clearpage
+%------------------------------------------------------------------
+%	PROBLEM 2
+%------------------------------------------------------------------
+
+\begin{homeworkProblem}[Problem 2]
+Following the notation used in Lecture 3, let
+$X_n$ be the 80 subjects from batch 1 and let
+$X_k$ be the remaining 20 subjects for batch 2; let $X = X_{n + k}$  be the full covariate data.  We first obtain the coefficient estimates using batch 1 using the Jacobi method.  These estimates are then updated using the batch 2 data and the formula
+
+\[\hat \beta_{n + k} = \hat \beta_n + (X_{n + k}^TX_{n + k})^{-1}X_k^T(y_k - X_k\hat\beta_n).\]
+
+This yields the same estimates as those found in Problem 1 using the full data directly.
+
+<<p2>>=
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+## PROBLEM 2 ####
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+# Set BATCH 1 data and compute coefficient
+# estimates for using the jacobi method.
+X_n <- X[1:80, ]
+y_n <- y[1:80]
+beta_batch1 <- jacobi(t(X_n) %*% X_n,
+               rep(1, 5), t(X_n) %*% y_n)
+
+# Set BATCH 2 data and update coefficient
+# estimates from BATCH 1
+# using formula from Lecture 3.
+X_k <- X[81:100, ]
+y_k <- y[81:100]
+A <- t(X) %*% X
+b <- A %*% beta_batch1 + t(X_k) %*% (y_k - X_k %*% beta_batch1)
+beta <- jacobi(A, beta_batch1, b)
+print(beta)
+@
+\end{homeworkProblem}
+
+\clearpage
+\begin{homeworkProblem}[\texttt{gram\_schmidt.R}]
+<<gramschmidt, eval=FALSE>>=
+gram_schmidt <- function(X) {
+  n <- nrow(X)
+  n_vars <- ncol(X)
+  Q <- matrix(0, nrow=n, ncol=n_vars)
+  R <- matrix(0, nrow=n_vars, ncol=n_vars)
+  v <- as.matrix(X[, 1])
+  R[1, 1] <- norm(v, type="F")
+  Q[, 1] <- v/R[1, 1]
+  for (j in 2:n_vars) {
+    v <- X[, j]
+    for (i in 1:(j - 1)) {
+      R[i, j] <- t(Q[, i]) %*% X[, j]
+      v <- v - R[i, j] %*% Q[, i]
+    }
+    R[j, j] <- norm(v, type="F")
+    Q[, j] <- v/R[j, j]
+  }
+  return(list(Q=Q, R=R))
+}
+@
+\end{homeworkProblem}
+
+\clearpage
+\begin{homeworkProblem}[\texttt{householder.R}]
+<<householder, eval=FALSE>>=
+householder <- function(X) {
+    n <- nrow(X)
+    p <- ncol(X)
+    U <- matrix(0, nrow=n, ncol=p)
+    Q <- diag(nrow=n)
+    for (k in 1:p) {
+        w <-  matrix(X[k:n, k])
+        w[1] <- w[1] - norm(w, type="F")
+        u <-  w/norm(w, type="F")
+        U[k:n, k] <- u
+        X[k:n, k:p] <- X[k:n, k:p] - 2*u %*% (t(u) %*% as.matrix(X[k:n, k:p]))
+        Q <- Q %*% (diag(n) - 2*U[, k] %*% t(U[, k]))
+    }
+    R <- matrix(0, nrow=p, ncol=p)
+    R[which(upper.tri(X, diag=T), arr.ind=T)] <- X[which(upper.tri(X, diag=T),
+                                                         arr.ind=T)]
+    return(list(U=U, Q=Q[, 1:p], R=R))
+}
+
+@
+
+\end{homeworkProblem}
+
+\clearpage
+\begin{homeworkProblem}[\texttt{jacobi.R}]
+<<jacobi, eval=FALSE>>=
+jacobi <- function(A, x_0, b, tol = 1e-6) {
+    n <- nrow(A)
+    x <- list(x_0)
+    k <- 1
+    terminate <- FALSE
+    while (!terminate) {
+        x[[k + 1]] <- x[[k]]
+        for (i in 1:n) {
+            r <- 0
+            for (j in 1:n) {
+                if (i != j)
+                    r <- r + A[i, j]*x[[k]][j]
+            }
+            x[[k + 1]][i] <- 1/A[i, i]*(b[i] - r)
+        }
+        if (norm(matrix(x[[k + 1]]) - matrix(x[[k]]), type = "F") < tol | k > 1e3)
+            terminate <- T
+        k <- k + 1
+    }
+    return(x[[k]])
+}
+@
+\end{homeworkProblem}
+\clearpage
+\begin{homeworkProblem}[Solution Code]
+
+<<solution, eval=F>>=
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# Dustin Pluta
+# Assignment 1
+# STAT 230: Winter 2017
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+setwd("~/Dropbox/Coursework/Winter2017/STAT230")
+dat1 <- read.csv("Data/Assignment1.csv", row.names = 1)
+
+X <- as.matrix(dat1[, 1:5])
+y <- as.matrix(dat1$y)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+## PROBLEM 1 ####
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+# (a) Gram-Schmidt
+source("Code/gram_schmidt.R")
+QR <- gram_schmidt(X)
+beta <- solve(QR$R) %*% t(QR$Q) %*% y
+print(beta)
+
+# (b) Householder
+source("Code/householder.R")
+QR <- householder(X)
+beta <- solve(QR$R) %*% t(QR$Q) %*% y
+print(beta)
+
+# (c) Jacobi
+source("Code/jacobi.R")
+beta <- jacobi(t(X) %*% X, rep(1, 5), t(X) %*% y)
+print(beta)
+
+# Verify values using lm()
+fit <- lm(y ~ . - 1, data = dat1)
+print(fit$coefficients)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+## PROBLEM 2 ####
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+# Set BATCH 1 data and compute coefficient
+# estimates for using the jacobi method.
+X_n <- X[1:80, ]
+y_n <- y[1:80]
+beta_batch1 <- jacobi(t(X_n) %*% X_n,
+               rep(1, 5), t(X_n) %*% y_n)
+
+# Set BATCH 2 data and update coefficient
+# estimates from BATCH 1
+# using formula from Lecture 3.
+X_k <- X[81:100, ]
+y_k <- y[81:100]
+A <- t(X) %*% X
+b <- A %*% beta_batch1 + t(X_k) %*% (y_k - X_k %*% beta_batch1)
+beta <- jacobi(A, beta_batch1, b)
+print(beta)
+@
+
+\end{homeworkProblem}
+\end{document}
+
